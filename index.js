@@ -1,15 +1,15 @@
-var fs = require('fs');
-var dirname = require('path').dirname;
-var users = require('./users_data');
+require('dotenv').config()
 var _ = require('underscore');
+var providers = require('./providers');
 
 module.exports = function(context) {
   return {
     whoIs: function(req, res) {
       var name = formatName(req.params.name);
+      var userInfo = providers.slack(name);
       var message = "User not found.";
-      if (users[name]){
-        message = describeUser(users[name]);
+      if (userInfo) {
+        message = describeUser(userInfo);
       }
 
       try {
@@ -51,6 +51,7 @@ function describeCodeArray(array){
 function separator(){
   return "=====================================================\n"
 }
+
 function mdBold(text){
   return "*" + text + "*";
 }
